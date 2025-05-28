@@ -13,11 +13,19 @@ export const BASE_URL = env.NEXT_PUBLIC_APP_URL;
 export const MAX_URL_LENGTH = 2000;
 export const CACHE_BURST_KEY = 'cache-burst:v0.0.2';
 
+import { Mail } from 'lucide-react';
+
 export const emailProviders = [
   {
     name: 'Gmail',
     icon: GmailColor,
     providerId: 'google',
+  },
+  {
+    name: 'IMAP',
+    icon: Mail,
+    providerId: 'imap',
+    isCustomForm: true, // Flag to indicate this provider uses a custom form rather than OAuth
   },
   //   {
   //     name: 'Outlook',

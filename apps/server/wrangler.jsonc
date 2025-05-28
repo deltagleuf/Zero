@@ -45,6 +45,9 @@
         "COOKIE_DOMAIN": "localhost",
         "NEXT_PUBLIC_BACKEND_URL": "http://localhost:8787",
         "NEXT_PUBLIC_APP_URL": "http://localhost:3000",
+        "OLLAMA_ENABLED": "true",
+        "OLLAMA_HOST": "http://localhost:11434",
+        "OLLAMA_DEFAULT_MODEL": "llama3",
       },
       "kv_namespaces": [
         {
@@ -79,6 +82,7 @@
       "vars": {
         "NODE_ENV": "production",
         "FORCE_GMAIL_CONSENT": "true",
+        "OLLAMA_ENABLED": "false",
       },
       "kv_namespaces": [
         {

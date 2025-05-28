@@ -24,7 +24,8 @@ Most email services today are either **closed-source**, **data-hungry**, or **to
 - 🦾 **AI Driven** - Enhance your emails with Agents & LLMs.
 - 🔒 **Data Privacy First** – Your emails, your data. Zero does not track, collect, or sell your data in any way. Please note: while we integrate with external services, the data passed through them is not under our control and falls under their respective privacy policies and terms of service.
 - ⚙️ **Self-Hosting Freedom** – Run your own email app with ease.
-- 📬 **Unified Inbox** – Connect multiple email providers like Gmail, Outlook, and more.
+- 📬 **Unified Inbox** – Connect multiple email providers including Gmail, IMAP accounts, and more.
+- 🤖 **Local AI Processing** - Use Ollama for privacy-focused AI processing without sending data to external APIs.
 - 🎨 **Customizable UI & Features** – Tailor your email experience the way you want it.
 - 🚀 **Developer-Friendly** – Built with extensibility and integrations in mind.
 
@@ -49,6 +50,13 @@ Zero is built with modern and reliable technologies:
 - [Docker](https://docs.docker.com/engine/install/) (v20 or higher)
 
 Before running the application, you'll need to set up services and configure environment variables. For more details on environment variables, see the [Environment Variables](#environment-variables) section.
+
+### New Features
+
+Check out our latest features in the [FEATURES.md](./FEATURES.md) file:
+
+- **IMAP Support**: Connect any email account via IMAP protocol
+- **Ollama Integration**: Process emails using local AI without external APIs
 
 ### Setup Options
 
@@ -198,6 +206,11 @@ DATABASE_URL=           # Required: PostgreSQL connection string for backend con
 # Redis
 REDIS_URL=              # Redis URL for caching (http://localhost:8079 for local dev)
 REDIS_TOKEN=            # Redis token (upstash-local-token for local dev)
+
+# Ollama Configuration (Optional - for local AI processing)
+OLLAMA_BASE_URL=        # Optional: Ollama server URL (default: http://localhost:11434)
+OLLAMA_MODEL=           # Optional: Ollama model to use (default: llama2)
+OLLAMA_ENABLED=         # Optional: Set to "true" to use Ollama instead of OpenAI
 ```
 
 For local development a connection string example is provided in the `.env.example` file located in the same folder as the database.

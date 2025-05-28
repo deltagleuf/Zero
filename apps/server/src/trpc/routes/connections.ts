@@ -1,11 +1,13 @@
 import { createRateLimiterMiddleware, privateProcedure, router } from '../trpc';
-import { connection, user as user_ } from '@zero/db/schema';
+import { connection, imapConnection, user as user_ } from '@zero/db/schema';
+import { imapRouter } from './connections/imap';
 import { Ratelimit } from '@upstash/ratelimit';
 import { TRPCError } from '@trpc/server';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 export const connectionsRouter = router({
+  imap: imapRouter,
   list: privateProcedure
     .use(
       createRateLimiterMiddleware({
@@ -15,7 +17,8 @@ export const connectionsRouter = router({
     )
     .query(async ({ ctx }) => {
       const { db, session } = ctx;
-      const connections = await db
+      // Get standard connections
+      const standardConnections = await db
         .select({
           id: connection.id,
           email: connection.email,
@@ -28,6 +31,29 @@ export const connectionsRouter = router({
         })
         .from(connection)
         .where(eq(connection.userId, session.user.id));
+
+      // Get IMAP connections
+      const imapConnections = await db
+        .select({
+          id: imapConnection.id,
+          email: imapConnection.email,
+          createdAt: imapConnection.createdAt,
+          accessToken: imapConnection.accessToken,
+          refreshToken: imapConnection.refreshToken,
+        })
+        .from(imapConnection)
+        .where(eq(imapConnection.userId, session.user.id));
+
+      // Combine and format connections
+      const connections = [
+        ...standardConnections,
+        ...imapConnections.map((conn) => ({
+          ...conn,
+          name: conn.email.split('@')[0], // Use local part of email as name
+          picture: null, // No avatar for IMAP connections
+          providerId: 'imap' as const,
+        })),
+      ];
 
       const disconnectedIds = connections
         .filter((c) => !c.accessToken || !c.refreshToken)

@@ -163,3 +163,24 @@ export const writingStyleMatrix = createTable(
     ];
   },
 );
+
+export const imapConnection = createTable(
+  'imap_connection',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    email: text('email').notNull(),
+    accessToken: text('access_token').notNull(), // Password for IMAP
+    refreshToken: text('refresh_token'),
+    expiresAt: timestamp('expires_at').notNull(),
+    imapServer: text('imap_server').notNull(),
+    smtpServer: text('smtp_server').notNull(),
+    imapPort: text('imap_port').notNull(),
+    smtpPort: text('smtp_port').notNull(),
+    createdAt: timestamp('created_at').notNull(),
+    updatedAt: timestamp('updated_at').notNull(),
+  },
+  (t) => [unique().on(t.userId, t.email)],
+);

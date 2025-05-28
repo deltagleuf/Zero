@@ -5,7 +5,13 @@ import { createDriver } from '../driver';
 import { toByteArray } from 'base64-js';
 import { and, eq } from 'drizzle-orm';
 
-export const FatalErrors = ['invalid_grant'];
+export const FatalErrors = [
+  'invalid_grant',
+  'invalid_credentials', // For IMAP authentication failures
+  'connection_error', // For IMAP connection issues
+  'imap_error', // General IMAP errors
+  'smtp_error', // SMTP sending errors
+];
 
 export const deleteActiveConnection = async () => {
   const c = getContext<HonoContext>();

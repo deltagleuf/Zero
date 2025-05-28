@@ -25,10 +25,15 @@
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org zero-7y --project nextjs ./apps/mail/.next && sentry-cli sourcemaps upload --org zero-7y --project nextjs ./apps/mail/.next"
   },
   "devDependencies": {
+    "@paralleldrive/cuid2": "^2.2.2",
+    "@types/imap": "^0.8.42",
+    "@types/mailparser": "^3.4.6",
     "@types/node": "22.13.8",
     "@zero/tsconfig": "workspace:*",
     "dotenv-cli": "^8.0.0",
     "husky": "9.1.7",
+    "imap": "^0.8.19",
+    "mailparser": "^3.7.3",
     "prettier": "3.5.3",
     "prettier-plugin-sort-imports": "1.8.6",
     "prettier-plugin-tailwindcss": "0.6.11",

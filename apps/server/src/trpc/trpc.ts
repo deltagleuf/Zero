@@ -3,7 +3,6 @@ import { Ratelimit, type RatelimitConfig } from '@upstash/ratelimit';
 import type { HonoContext, HonoVariables } from '../ctx';
 import { initTRPC, TRPCError } from '@trpc/server';
 import { connection } from '@zero/db/schema';
-import { env } from 'cloudflare:workers';
 import { redis } from '../lib/services';
 import { eq, and } from 'drizzle-orm';
 import type { Context } from 'hono';
@@ -27,6 +26,8 @@ export const privateProcedure = publicProcedure.use(async ({ ctx, next }) => {
 
   return next({ ctx: { ...ctx, session: ctx.session } });
 });
+
+export const protectedProcedure = publicProcedure;
 
 export const activeConnectionProcedure = privateProcedure.use(async ({ ctx, next }) => {
   try {
@@ -81,7 +82,7 @@ export const brainServerAvailableMiddleware = t.middleware(async ({ next, ctx })
   return next({
     ctx: {
       ...ctx,
-      brainServerAvailable: !!env.BRAIN_URL,
+      brainServerAvailable: !!process.env['BRAIN_URL'],
     },
   });
 });
@@ -89,7 +90,7 @@ export const brainServerAvailableMiddleware = t.middleware(async ({ next, ctx })
 export const processIP = (c: Context<HonoContext>) => {
   const cfIP = c.req.header('CF-Connecting-IP');
   const ip = c.req.header('x-forwarded-for');
-  if (!ip && !cfIP && env.NODE_ENV === 'production') {
+  if (!ip && !cfIP && process.env['NODE_ENV'] === 'production') {
     console.log('No IP detected');
     throw new Error('No IP detected');
   }
