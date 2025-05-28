@@ -83,6 +83,7 @@ export default function ConnectionsPage() {
                 const Icon = emailProviders.find(
                   (p) => p.providerId === connection.providerId,
                 )?.icon;
+                const isImap = connection.providerId === 'imap';
                 return (
                   <div
                     key={connection.id}
@@ -98,12 +99,26 @@ export default function ConnectionsPage() {
                           height={48}
                         />
                       ) : (
-                        <div className="bg-primary/10 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg">
-                          {Icon && <Icon className="size-6" />}
+                        <div
+                          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${isImap ? 'bg-blue-500/10' : 'bg-primary/10'}`}
+                        >
+                          {Icon && <Icon className={`size-6 ${isImap ? 'text-blue-500' : ''}`} />}
                         </div>
                       )}
                       <div className="flex min-w-0 flex-col gap-1">
-                        <span className="truncate text-sm font-medium">{connection.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="truncate text-sm font-medium">
+                            {connection.name || connection.email.split('@')[0]}
+                          </span>
+                          {connection.providerId === 'imap' && (
+                            <Badge
+                              variant="outline"
+                              className="border-blue-200 bg-blue-500/10 text-blue-500"
+                            >
+                              IMAP
+                            </Badge>
+                          )}
+                        </div>
                         <div className="text-muted-foreground flex items-center gap-2 text-xs">
                           <Tooltip
                             delayDuration={0}
@@ -143,19 +158,28 @@ export default function ConnectionsPage() {
                               {t('pages.settings.connections.disconnected')}
                             </Badge>
                           </div>
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={async () => {
-                              await authClient.linkSocial({
-                                provider: connection.providerId,
-                                callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/settings/connections`,
-                              });
-                            }}
-                          >
-                            <Unplug className="size-4" />
-                            {t('pages.settings.connections.reconnect')}
-                          </Button>
+                          {connection.providerId !== 'imap' ? (
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={async () => {
+                                await authClient.linkSocial({
+                                  provider: connection.providerId,
+                                  callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/settings/connections`,
+                                });
+                              }}
+                            >
+                              <Unplug className="size-4" />
+                              {t('pages.settings.connections.reconnect')}
+                            </Button>
+                          ) : (
+                            <AddConnectionDialog>
+                              <Button variant="secondary" size="sm">
+                                <Unplug className="size-4" />
+                                {t('pages.settings.connections.reconnect')}
+                              </Button>
+                            </AddConnectionDialog>
+                          )}
                         </>
                       ) : null}
                       <Dialog>

@@ -31,11 +31,11 @@ const nextConfig: NextConfig = {
     // TODO: enforce linting throwing errors on build
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '20mb',
-    },
-  },
+  // experimental: {
+  //   serverActions: {
+  //     bodySizeLimit: '20mb',
+  //   },
+  // },
   async redirects() {
     return [
       {

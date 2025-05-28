@@ -1,5 +1,5 @@
-import { connection, imapConnection } from '@zero/db/schema';
 import { getContext } from 'hono/context-storage';
+import { connection, imapConnection } from '@zero/db/schema';
 import type { HonoContext } from '../ctx';
 import { createDriver } from './driver';
 import { and, eq } from 'drizzle-orm';
@@ -13,20 +13,20 @@ export const getActiveConnection = async () => {
     const activeConnection = await db.query.connection.findFirst({
       where: and(eq(connection.userId, session.user.id)),
     });
-
+    
     if (activeConnection) {
       return activeConnection;
     }
-
+    
     // If no standard connection, check for IMAP connection
     const activeImapConnection = await db.query.imapConnection.findFirst({
       where: and(eq(imapConnection.userId, session.user.id)),
     });
-
+    
     if (!activeImapConnection) {
       throw new Error(`Active connection not found for user ${session.user.id}`);
     }
-
+    
     return {
       ...activeImapConnection,
       providerId: 'imap', // Set provider ID for IMAP
@@ -44,7 +44,7 @@ export const getActiveConnection = async () => {
   if (activeConnection) {
     return activeConnection;
   }
-
+  
   // Then check IMAP connections
   const activeImapConnection = await db.query.imapConnection.findFirst({
     where: and(
@@ -52,7 +52,7 @@ export const getActiveConnection = async () => {
       eq(imapConnection.id, session.activeConnection.id),
     ),
   });
-
+  
   if (activeImapConnection) {
     return {
       ...activeImapConnection,
@@ -64,9 +64,7 @@ export const getActiveConnection = async () => {
 };
 
 // Use a union type to support both standard connections and IMAP connections
-type ConnectionType =
-  | typeof connection.$inferSelect
-  | (typeof imapConnection.$inferSelect & { providerId: string });
+type ConnectionType = typeof connection.$inferSelect | (typeof imapConnection.$inferSelect & { providerId: string });
 
 export const connectionToDriver = (activeConnection: ConnectionType) => {
   if (activeConnection.providerId === 'imap') {
